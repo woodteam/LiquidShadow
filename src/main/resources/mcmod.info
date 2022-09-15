@@ -1,0 +1,16 @@
+[
+  {
+    "modid": "liquidshadow",
+    "name": "LiquidShadow",
+    "description": "a minecraft hacked client based on liquid bounce.",
+    "version": "${version}",
+    "mcversion": "1.8.9",
+    "url": "https://liquidbounce.net",
+    "updateUrl": "",
+    "authorList": ["woodTeam"],
+    "credits": "",
+    "logoFile": "",
+    "screenshots": [],
+    "dependencies": []
+  }
+]
