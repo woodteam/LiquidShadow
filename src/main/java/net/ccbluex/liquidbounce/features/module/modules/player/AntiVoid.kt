@@ -37,7 +37,6 @@ class AntiVoid : Module() {
     private val modeValue = ListValue("Mode", arrayOf("TeleportBack", "FlyFlag", "OnGroundSpoof", "MotionTeleport-Flag"), "FlyFlag")
     private val maxFallDistance = IntegerValue("MaxFallDistance", 10, 2, 255)
     private val maxDistanceWithoutGround = FloatValue("MaxDistanceToSetback", 2.5f, 1f, 30f)
-    private val indicator = BoolValue("Indicator", true)
 
     private var detectedLocation: BlockPos? = null
     private var lastFound = 0F
@@ -76,6 +75,8 @@ class AntiVoid : Module() {
                     thePlayer.moveForward
             )
 
+
+
             detectedLocation = fallingPlayer.findCollision(60)?.pos
 
             if (detectedLocation != null && abs(thePlayer.posY - detectedLocation!!.y) +
@@ -109,49 +110,5 @@ class AntiVoid : Module() {
                 }
             }
         }
-    }
-
-    @EventTarget
-    fun onRender3D(event: Render3DEvent) {
-        val thePlayer = mc.thePlayer ?: return
-
-        if (detectedLocation == null || !indicator.get() ||
-                thePlayer.fallDistance + (thePlayer.posY - (detectedLocation!!.y + 1)) < 3)
-            return
-
-        val x = detectedLocation!!.x
-        val y = detectedLocation!!.y
-        val z = detectedLocation!!.z
-
-        val renderManager = mc.renderManager
-
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA)
-        GL11.glEnable(GL11.GL_BLEND)
-        GL11.glLineWidth(2f)
-        GL11.glDisable(GL11.GL_TEXTURE_2D)
-        GL11.glDisable(GL11.GL_DEPTH_TEST)
-        GL11.glDepthMask(false)
-
-        RenderUtils.glColor(Color(255, 0, 0, 90))
-        RenderUtils.drawFilledBox(
-            AxisAlignedBB.fromBounds(
-                x - renderManager.renderPosX,
-                y + 1 - renderManager.renderPosY,
-                z - renderManager.renderPosZ,
-                x - renderManager.renderPosX + 1.0,
-                y + 1.2 - renderManager.renderPosY,
-                z - renderManager.renderPosZ + 1.0)
-        )
-
-        GL11.glEnable(GL11.GL_TEXTURE_2D)
-        GL11.glEnable(GL11.GL_DEPTH_TEST)
-        GL11.glDepthMask(true)
-        GL11.glDisable(GL11.GL_BLEND)
-
-        val fallDist = floor(thePlayer.fallDistance + (thePlayer.posY - (y + 0.5))).toInt()
-
-        RenderUtils.renderNameTag("${fallDist}m (~${max(0, fallDist - 3)} damage)", x + 0.5, y + 1.7, z + 0.5)
-
-        GlStateManager.resetColor()
     }
 }
