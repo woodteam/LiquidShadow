@@ -7,7 +7,6 @@ package net.ccbluex.liquidbounce.ui.client.altmanager
 
 import com.google.gson.JsonElement
 import com.google.gson.JsonParser
-import com.thealtening.AltService
 import me.liuli.elixir.account.CrackedAccount
 import me.liuli.elixir.account.MicrosoftAccount
 import me.liuli.elixir.account.MinecraftAccount
@@ -18,7 +17,6 @@ import net.ccbluex.liquidbounce.event.SessionEvent
 import net.ccbluex.liquidbounce.ui.client.altmanager.menus.GuiChangeName
 import net.ccbluex.liquidbounce.ui.client.altmanager.menus.GuiLoginIntoAccount
 import net.ccbluex.liquidbounce.ui.client.altmanager.menus.GuiSessionLogin
-import net.ccbluex.liquidbounce.ui.client.altmanager.menus.altgenerator.GuiTheAltening
 import net.ccbluex.liquidbounce.ui.font.Fonts
 import net.ccbluex.liquidbounce.utils.ClientUtils
 import net.ccbluex.liquidbounce.utils.ServerUtils
@@ -68,21 +66,12 @@ class GuiAltManager(private val prevGui: GuiScreen) : GuiScreen() {
         val startPositionY = 22
         buttonList.add(GuiButton(1, width - 80, startPositionY + 24, 70, 20, "Add"))
         buttonList.add(GuiButton(2, width - 80, startPositionY + 24 * 2, 70, 20, "Remove"))
-        buttonList.add(GuiButton(7, width - 80, startPositionY + 24 * 3, 70, 20, "Import"))
-        buttonList.add(GuiButton(12, width - 80, startPositionY + 24 * 4, 70, 20, "Export"))
-        buttonList.add(GuiButton(8, width - 80, startPositionY + 24 * 5, 70, 20, "Copy"))
         buttonList.add(GuiButton(0, width - 80, height - 65, 70, 20, "Back"))
         buttonList.add(GuiButton(3, 5, startPositionY + 24, 90, 20, "Login").also { loginButton = it })
         buttonList.add(GuiButton(4, 5, startPositionY + 24 * 2, 90, 20, "Random").also { randomButton = it })
         buttonList.add(GuiButton(6, 5, startPositionY + 24 * 3, 90, 20, "Direct Login"))
-        buttonList.add(GuiButton(10, 5, startPositionY + 24 * 4, 90, 20, "Session Login"))
-        buttonList.add(GuiButton(88, 5, startPositionY + 24 * 5, 90, 20, "Change Name"))
-        buttonList.add(GuiButton(11,5,startPositionY + 24 * 6,90,20,"Random Name"))
-
-        if (activeGenerators.getOrDefault("thealtening", true)) {
-            buttonList.add(GuiButton(9, 5, startPositionY + 24 * 7 + 5, 90, 20, "TheAltening"))
-        }
-
+        buttonList.add(GuiButton(88, 5, startPositionY + 24 * 4, 90, 20, "Change Name"))
+        buttonList.add(GuiButton(11,5,startPositionY + 24 * 5,90,20,"Random Name"))
     }
 
     override fun drawScreen(mouseX: Int, mouseY: Int, partialTicks: Float) {
@@ -102,7 +91,6 @@ class GuiAltManager(private val prevGui: GuiScreen) : GuiScreen() {
             6f,
             0xffffff
         )
-        Fonts.font35.drawStringWithShadow("§7Type: §a${if (altService.currentService == AltService.EnumAltService.THEALTENING) "TheAltening" else if (isValidTokenOffline(mc.getSession().token)) "Premium" else "Cracked"}", 6f, 15f, 0xffffff)
         searchField.drawTextBox()
         if (searchField.text.isEmpty() && !searchField.isFocused) Fonts.font40.drawStringWithShadow(
             "§7Search...",
@@ -237,9 +225,6 @@ class GuiAltManager(private val prevGui: GuiScreen) : GuiScreen() {
             }
             88 -> { // Gui Change Name Button
                 mc.displayGuiScreen(GuiChangeName(this))
-            }
-            9 -> { // Altening Button
-                mc.displayGuiScreen(GuiTheAltening(this))
             }
             10 -> { // Session Login Button
                 mc.displayGuiScreen(GuiSessionLogin(this))
@@ -380,8 +365,6 @@ class GuiAltManager(private val prevGui: GuiScreen) : GuiScreen() {
     }
 
     companion object {
-
-        val altService = AltService()
         private val activeGenerators = mutableMapOf<String, Boolean>()
 
         fun loadActiveGenerators() {
@@ -404,18 +387,6 @@ class GuiAltManager(private val prevGui: GuiScreen) : GuiScreen() {
         }
 
         fun login(minecraftAccount: MinecraftAccount, success: () -> Unit, error: (Exception) -> Unit, done: () -> Unit) = thread(name = "LoginTask") {
-            if (altService.currentService != AltService.EnumAltService.MOJANG) {
-                try {
-                    altService.switchService(AltService.EnumAltService.MOJANG)
-                } catch (e: NoSuchFieldException) {
-                    error(e)
-                    ClientUtils.getLogger().error("Something went wrong while trying to switch alt service.", e)
-                } catch (e: IllegalAccessException) {
-                    error(e)
-                    ClientUtils.getLogger().error("Something went wrong while trying to switch alt service.", e)
-                }
-            }
-
             try {
                 minecraftAccount.update()
                 Minecraft.getMinecraft().session = Session(
