@@ -64,8 +64,6 @@ dependencies {
         exclude module: "kotlin-stdlib"
         exclude module: "authlib"
     }
-    include 'com.github.TheAltening:TheAltening4j:d0771f42d3'
-    include 'com.github.TheAltening:API-Java-AuthLib:-SNAPSHOT'
 
     include fileTree(include: ["*.jar"], dir: "libs")
 }
