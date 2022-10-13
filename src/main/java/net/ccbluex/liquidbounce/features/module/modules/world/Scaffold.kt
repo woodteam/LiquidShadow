@@ -106,7 +106,7 @@ class Scaffold : Module() {
 
     // Rotation Options
     private val strafeMode = ListValue("Strafe", arrayOf("Off", "AAC"), "Off")
-    private val rotationsValue = ListValue("Rotations", arrayOf("Off","Default","Down","Back"), "Default")
+    private val rotationsValue = ListValue("Rotations", arrayOf("Off","Default","Down"), "Default")
     private val silentRotationValue = BoolValue("SilentRotation", true)
     private val keepRotationValue = BoolValue("KeepRotation", true)
     private val keepLengthValue = IntegerValue("KeepRotationLength", 0, 0, 20)
@@ -1037,7 +1037,7 @@ class Scaffold : Module() {
                                 }
                             }
                             val rotation = Rotation(
-                                wrapAngleTo180_float(Math.toDegrees(atan2(diffZ, diffX)).toFloat() - 90f),
+                                mc.thePlayer.rotationYaw - 180F,
                                 wrapAngleTo180_float(-Math.toDegrees(atan2(diffY, diffXZ)).toFloat())
                             )
                             val rotationVector = RotationUtils.getVectorForRotation(rotation)
