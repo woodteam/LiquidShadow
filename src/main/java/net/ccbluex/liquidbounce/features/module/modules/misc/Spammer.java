@@ -12,8 +12,8 @@ import net.ccbluex.liquidbounce.event.UpdateEvent;
 import net.ccbluex.liquidbounce.features.module.Module;
 import net.ccbluex.liquidbounce.features.module.ModuleCategory;
 import net.ccbluex.liquidbounce.features.module.ModuleInfo;
-import net.ccbluex.liquidbounce.ui.client.hud.element.elements.NormalType;
 import net.ccbluex.liquidbounce.ui.client.hud.element.elements.Notification;
+import net.ccbluex.liquidbounce.ui.client.hud.element.elements.NotificationType;
 import net.ccbluex.liquidbounce.utils.ServerUtils;
 import net.ccbluex.liquidbounce.utils.misc.RandomUtils;
 import net.ccbluex.liquidbounce.utils.timer.MSTimer;
@@ -79,7 +79,7 @@ public class Spammer extends Module {
             if (message.contains((ServerUtils.getRemoteIp().toLowerCase().contains("Mineland".toLowerCase()) || ServerUtils.getRemoteIp().toLowerCase().contains("join-ml".toLowerCase())) && lastMessage.charAt(0) == '!' ? lastMessage.substring(1) : lastMessage) && hideMessageValue.get()) {
                 event.cancelEvent();
                 if (hideNotificationValue.get()) {
-                    LiquidBounce.hud.addNotification(new Notification("hided a spam message " + lastMessage,new NormalType()));
+                    LiquidBounce.hud.addNotification(new Notification("hided a spam message " + lastMessage, NotificationType.NORMAL));
                 }
             }
         }

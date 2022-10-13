@@ -28,7 +28,7 @@ class Notifications(x: Double = 0.0, y: Double = 30.0, scale: Float = 1F,
     /**
      * Example notification for CustomHUD designer
      */
-    private val exampleNotification = Notification("Example Notification",NormalType())
+    private val exampleNotification = Notification("Example Notification",NotificationType.NORMAL)
 
     private val backgroundAlphaValue = IntegerValue("backgroundAlpha",60,0,255)
 
@@ -91,20 +91,20 @@ class Notification(private val message: String,private val notificationType: Not
     fun drawNotification(backgroundAlpha:Int,y: Float) {
         // Draw notification
         RenderUtils.drawRect(-x + 8 + textLength, -y, -x, -y + -20F, Color(0,0,0,backgroundAlpha).rgb)
-        if (notificationType is NormalType) {
+        if (notificationType == NotificationType.NORMAL) {
             RenderUtils.drawRect(-x + 8 + textLength, -y, -x, -y + -20F, Color(65, 215, 255,backgroundAlpha).rgb)
             RenderUtils.drawRect(-x + stay, -y, -x, -y + -20F, Color(150, 255, 255,backgroundAlpha).rgb)
         }
-        else if (notificationType is ToggleType) {
-            if (notificationType.getModuleState()) {
+        else if (true) {
+            if (notificationType == NotificationType.GOOD) {
                 RenderUtils.drawRect(-x + 8 + textLength, -y, -x, -y + -20F, Color(80, 255, 80,backgroundAlpha).rgb)
                 RenderUtils.drawRect(-x + stay, -y, -x, -y + -20F, Color(150, 255, 150,backgroundAlpha).rgb)
-            } else if (!notificationType.getModuleState()) {
+            } else if (notificationType == NotificationType.BAD) {
                 RenderUtils.drawRect(-x + 8 + textLength, -y, -x, -y + -20F, Color(255,80,80,backgroundAlpha).rgb)
                 RenderUtils.drawRect(-x + stay, -y, -x, -y + -20F, Color(255,150,150,backgroundAlpha).rgb)
             }
         }
-        else if (notificationType is WarningType) {
+        else if (notificationType == NotificationType.WARNING) {
             RenderUtils.drawRect(-x + 8 + textLength, -y, -x, -y + -20F, Color(255,195,0,backgroundAlpha).rgb)
             RenderUtils.drawRect(-x + stay, -y, -x, -y + -20F, Color(255,235,45,backgroundAlpha).rgb)
         }
@@ -148,14 +148,6 @@ class Notification(private val message: String,private val notificationType: Not
     }
 }
 
-open class NotificationType
-
-class NormalType : net.ccbluex.liquidbounce.ui.client.hud.element.elements.NotificationType()
-
-class WarningType : NotificationType()
-
-class ToggleType(private val moduleName:String,private val moduleState:Boolean) : NotificationType() {
-    fun getModuleName() : String { return moduleName }
-
-    fun getModuleState() : Boolean { return moduleState }
+enum class NotificationType {
+    NORMAL,GOOD,BAD,WARNING
 }

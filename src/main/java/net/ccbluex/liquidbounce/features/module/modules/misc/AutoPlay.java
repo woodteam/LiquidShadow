@@ -14,8 +14,8 @@ import net.ccbluex.liquidbounce.features.module.modules.player.InventoryCleaner;
 import net.ccbluex.liquidbounce.features.module.modules.world.ChestAura;
 import net.ccbluex.liquidbounce.features.module.modules.world.ChestStealer;
 import net.ccbluex.liquidbounce.features.module.modules.world.Fucker;
-import net.ccbluex.liquidbounce.ui.client.hud.element.elements.NormalType;
 import net.ccbluex.liquidbounce.ui.client.hud.element.elements.Notification;
+import net.ccbluex.liquidbounce.ui.client.hud.element.elements.NotificationType;
 import net.ccbluex.liquidbounce.value.BoolValue;
 import net.ccbluex.liquidbounce.value.IntegerValue;
 import net.ccbluex.liquidbounce.value.ListValue;
@@ -114,7 +114,7 @@ public class AutoPlay extends Module {
 
 
         if (ticks >= delayValue.get() * 20) {
-            LiquidBounce.hud.addNotification(new Notification("Sending you to next game...",new NormalType()));
+            LiquidBounce.hud.addNotification(new Notification("Sending you to next game...", NotificationType.NORMAL));
             if (serverValue.get().equalsIgnoreCase("Mineland")) {
                 ItemStack paperItem = mc.thePlayer.inventoryContainer.getSlot(paperSlot).getStack();
                 mc.getNetHandler().addToSendQueue(new C09PacketHeldItemChange(paperSlot - 36));
@@ -129,7 +129,7 @@ public class AutoPlay extends Module {
             ticks = 0;
         }
         if (needRestart && ticks == 0) {
-            LiquidBounce.hud.addNotification(new Notification("Sending you to next game in " + delayValue.get() + " seconds.",new NormalType()));
+            LiquidBounce.hud.addNotification(new Notification("Sending you to next game in " + delayValue.get() + " seconds.",NotificationType.NORMAL));
 
             if (disableKillAuraValue.get())
                 LiquidBounce.moduleManager.getModule(KillAura.class).setState(false);

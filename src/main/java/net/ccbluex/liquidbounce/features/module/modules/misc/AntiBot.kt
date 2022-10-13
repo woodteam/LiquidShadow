@@ -10,8 +10,8 @@ import net.ccbluex.liquidbounce.event.*
 import net.ccbluex.liquidbounce.features.module.Module
 import net.ccbluex.liquidbounce.features.module.ModuleCategory
 import net.ccbluex.liquidbounce.features.module.ModuleInfo
-import net.ccbluex.liquidbounce.ui.client.hud.element.elements.NormalType
 import net.ccbluex.liquidbounce.ui.client.hud.element.elements.Notification
+import net.ccbluex.liquidbounce.ui.client.hud.element.elements.NotificationType
 import net.ccbluex.liquidbounce.utils.extensions.getFullName
 import net.ccbluex.liquidbounce.utils.render.ColorUtils.stripColor
 import net.ccbluex.liquidbounce.utils.timer.MSTimer
@@ -239,7 +239,7 @@ object AntiBot : Module() {
                 if (entity is EntityLivingBase && isBot(entity) && entity != mc.thePlayer) {
                     mc.theWorld.removeEntityFromWorld(entity.entityId)
                     if (removeNotificationValue.get()) {
-                        LiquidBounce.hud.addNotification(Notification(entity.name + "§r is been removed cause its a bot!",NormalType()))
+                        LiquidBounce.hud.addNotification(Notification(entity.name + "§r is been removed cause its a bot!",NotificationType.NORMAL))
                     }
                 }
             }
