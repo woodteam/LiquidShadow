@@ -15,6 +15,7 @@ import net.ccbluex.liquidbounce.features.module.ModuleCategory
 import net.ccbluex.liquidbounce.features.module.ModuleInfo
 import net.ccbluex.liquidbounce.features.module.modules.combat.KillAura
 import net.ccbluex.liquidbounce.utils.MovementUtils
+import net.ccbluex.liquidbounce.utils.timer.MSTimer
 import net.ccbluex.liquidbounce.value.BoolValue
 import net.ccbluex.liquidbounce.value.FloatValue
 import net.ccbluex.liquidbounce.value.ListValue
@@ -28,7 +29,8 @@ import net.minecraft.util.EnumFacing
         category = ModuleCategory.MOVEMENT)
 class NoSlow : Module() {
 
-    private val modeValue = ListValue("Mode", arrayOf("Vanilla","NCP","AAC5-NotBeenTested"),"NCP")
+    private val modeValue = ListValue("Mode", arrayOf("Vanilla","NCPPacket","AAC5-NotBeenTested","Watchdog" // aac5 and watchdog from fdp
+             ),"NCPPacket")
 
     // Highly customizable values
 
@@ -45,6 +47,8 @@ class NoSlow : Module() {
     val soulsandValue = BoolValue("Soulsand", true)
     val liquidPushValue = BoolValue("LiquidPush", true)
 
+    val msTimer = MSTimer()
+
     @EventTarget
     fun onMotion(event: MotionEvent) {
         val thePlayer = mc.thePlayer ?: return
@@ -57,7 +61,7 @@ class NoSlow : Module() {
         if (!thePlayer.isBlocking && !aura.blockingStatus)
             return
 
-        if (modeValue.get().equals("NCP",true)) {
+        if (modeValue.get().equals("NCPPacket",true)) {
             when (event.eventState) {
                 EventState.PRE -> {
                     val digging = C07PacketPlayerDigging(C07PacketPlayerDigging.Action.RELEASE_USE_ITEM, BlockPos(0, 0, 0), EnumFacing.DOWN)
@@ -77,6 +81,20 @@ class NoSlow : Module() {
                 }
             }
             return
+        }
+        if (modeValue.get().equals("Watchdog",true)) {
+            if (mc.thePlayer.ticksExisted % 2 == 0) {
+                sendPacket(event, true, sendC08 = false, delay = true, delayValue = 50, onGround = true)
+            } else {
+                sendPacket(event,
+                    sendC07 = false,
+                    sendC08 = true,
+                    delay = false,
+                    delayValue = 0,
+                    onGround = true,
+                    watchDog = true
+                )
+            }
         }
     }
 
@@ -100,6 +118,40 @@ class NoSlow : Module() {
                 if (isForward) this.bowForwardMultiplier.get() else this.bowStrafeMultiplier.get()
             }
             else -> 0.2F
+        }
+    }
+
+    private fun sendPacket(
+        event: MotionEvent,
+        sendC07: Boolean,
+        sendC08: Boolean,
+        delay: Boolean,
+        delayValue: Long,
+        onGround: Boolean,
+        watchDog: Boolean = false
+    ) {
+        val digging = C07PacketPlayerDigging(C07PacketPlayerDigging.Action.RELEASE_USE_ITEM, BlockPos(-1, -1, -1), EnumFacing.DOWN)
+        val blockPlace = C08PacketPlayerBlockPlacement(mc.thePlayer.inventory.getCurrentItem())
+        val blockMent = C08PacketPlayerBlockPlacement(BlockPos(-1, -1, -1), 255, mc.thePlayer.inventory.getCurrentItem(), 0f, 0f, 0f)
+        if (onGround && !mc.thePlayer.onGround) {
+            return
+        }
+        if (sendC07 && event.eventState == EventState.PRE) {
+            if (delay && msTimer.hasTimePassed(delayValue)) {
+                mc.netHandler.addToSendQueue(digging)
+            } else if (!delay) {
+                mc.netHandler.addToSendQueue(digging)
+            }
+        }
+        if (sendC08 && event.eventState == EventState.POST) {
+            if (delay && msTimer.hasTimePassed(delayValue) && !watchDog) {
+                mc.netHandler.addToSendQueue(blockPlace)
+                msTimer.reset()
+            } else if (!delay && !watchDog) {
+                mc.netHandler.addToSendQueue(blockPlace)
+            } else if (watchDog) {
+                mc.netHandler.addToSendQueue(blockMent)
+            }
         }
     }
 
