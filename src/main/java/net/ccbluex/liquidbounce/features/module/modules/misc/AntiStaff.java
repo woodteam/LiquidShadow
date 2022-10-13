@@ -6,8 +6,8 @@ import net.ccbluex.liquidbounce.event.UpdateEvent;
 import net.ccbluex.liquidbounce.features.module.Module;
 import net.ccbluex.liquidbounce.features.module.ModuleCategory;
 import net.ccbluex.liquidbounce.features.module.ModuleInfo;
-import net.ccbluex.liquidbounce.ui.client.hud.element.elements.NormalType;
 import net.ccbluex.liquidbounce.ui.client.hud.element.elements.Notification;
+import net.ccbluex.liquidbounce.ui.client.hud.element.elements.NotificationType;
 import net.ccbluex.liquidbounce.value.IntegerValue;
 import net.ccbluex.liquidbounce.value.ListValue;
 import net.ccbluex.liquidbounce.value.TextValue;
@@ -41,7 +41,7 @@ public class AntiStaff extends Module {
                         if (livingBase.getDisplayName().getFormattedText().contains("Moder⁺") || livingBase.getDisplayName().getFormattedText().contains("Moder³") || livingBase.getDisplayName().getFormattedText().contains("Moder²") || livingBase.getDisplayName().getFormattedText().contains("Moder¹")) {
                             if (!coolDown) {
                                 mc.thePlayer.sendChatMessage("/" + hubCommandValue.get());
-                                LiquidBounce.hud.addNotification(new Notification(livingBase.getDisplayName().getFormattedText() + "§r is a staff!So you are leaving this game.",new NormalType()));
+                                LiquidBounce.hud.addNotification(new Notification(livingBase.getDisplayName().getFormattedText() + "§r is a staff!So you are leaving this game.", NotificationType.NORMAL));
                                 coolDown = true;
                             }
                         }

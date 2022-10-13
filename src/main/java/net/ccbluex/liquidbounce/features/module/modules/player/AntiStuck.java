@@ -8,8 +8,8 @@ import net.ccbluex.liquidbounce.features.module.Module;
 import net.ccbluex.liquidbounce.features.module.ModuleCategory;
 import net.ccbluex.liquidbounce.features.module.ModuleInfo;
 import net.ccbluex.liquidbounce.features.module.modules.world.Scaffold;
-import net.ccbluex.liquidbounce.ui.client.hud.element.elements.NormalType;
 import net.ccbluex.liquidbounce.ui.client.hud.element.elements.Notification;
+import net.ccbluex.liquidbounce.ui.client.hud.element.elements.NotificationType;
 import net.ccbluex.liquidbounce.value.IntegerValue;
 import net.minecraft.network.play.server.S08PacketPlayerPosLook;
 
@@ -32,7 +32,7 @@ public class AntiStuck extends Module {
         }
         if (ticks1 >= unStuckTicksValue.get() && unStucking) {
             LiquidBounce.moduleManager.getModule(Freeze.class).setState(false);
-            LiquidBounce.hud.addNotification(new Notification("You are been unstucked!",new NormalType()));
+            LiquidBounce.hud.addNotification(new Notification("You are been unstucked!",NotificationType.NORMAL));
             unStucking = false;
             flags = 0;
             ticks1 = 0;
@@ -40,7 +40,7 @@ public class AntiStuck extends Module {
         if (flags >= maxFlagsValue.get()) {
             LiquidBounce.moduleManager.getModule(Freeze.class).setState(true);
             LiquidBounce.moduleManager.getModule(Scaffold.class).setState(false);
-            LiquidBounce.hud.addNotification(new Notification("Trying to unstuck you...",new NormalType()));
+            LiquidBounce.hud.addNotification(new Notification("Trying to unstuck you...", NotificationType.NORMAL));
             unStucking = true;
             flags = 0;
             ticks1 = 0;
